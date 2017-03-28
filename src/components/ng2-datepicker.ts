@@ -4,7 +4,7 @@ import * as moment_ from 'moment';
 
 const moment: any = (<any>moment_).default || moment_;
 
-interface CalendarDate {
+export interface CalendarDate {
   day: number;
   month: number;
   year: number;
@@ -39,7 +39,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   private onTouched: Function;
   private el: Element;
   public viewDate: string = null;
-  private days: CalendarDate[] = [];
+  public days: CalendarDate[] = [];
 
   private onTouchedCallback: () => void = () => { };
   private onChangeCallback: (_: any) => void = () => { };
