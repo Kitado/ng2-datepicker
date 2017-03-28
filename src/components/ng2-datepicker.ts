@@ -34,11 +34,11 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   @Input() viewFormat: string;
   @Input() firstWeekdaySunday: boolean;
 
-  private date: any = moment();
+  public date: any = moment();
   private onChange: Function;
   private onTouched: Function;
   private el: Element;
-  private viewDate: string = null;
+  public viewDate: string = null;
   private days: CalendarDate[] = [];
 
   private onTouchedCallback: () => void = () => { };
@@ -63,7 +63,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     this.opened = this.opened || false;
     this.format = this.format || 'YYYY-MM-DD';
     this.viewFormat = this.viewFormat || 'D MMMM YYYY';
-    this.firstWeekdaySunday = this.firstWeekdaySunday || false; 
+    this.firstWeekdaySunday = this.firstWeekdaySunday || false;
     setTimeout(() => {
       if (!this.viewDate) {
         let value = moment();
@@ -98,10 +98,10 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     for (let i = n; i <= date.endOf('month').date(); i += 1) {
       let currentDate = moment(`${i}.${month + 1}.${year}`, 'DD.MM.YYYY');
       let today = (moment().isSame(currentDate, 'day') && moment().isSame(currentDate, 'month')) ? true : false;
-      let selected = (selectedDate.isSame(currentDate, 'day')) ? true : false; 
+      let selected = (selectedDate.isSame(currentDate, 'day')) ? true : false;
 
       if (i > 0) {
-        this.days.push({ 
+        this.days.push({
           day: i,
           month: month + 1,
           year: year,
@@ -110,13 +110,13 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
           selected: selected
         });
       } else {
-        this.days.push({ 
+        this.days.push({
           day: null,
           month: null,
           year: null,
           enabled:false,
           today: false,
-          selected: false 
+          selected: false
         });
       }
     }
@@ -156,7 +156,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   }
 
   toggle() {
-    this.opened = !this.opened; 
+    this.opened = !this.opened;
   }
 
   open() {

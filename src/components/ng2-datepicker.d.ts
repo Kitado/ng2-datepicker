@@ -8,12 +8,12 @@ export declare class DatePickerComponent implements ControlValueAccessor, OnInit
     format: string;
     viewFormat: string;
     firstWeekdaySunday: boolean;
-    private date;
+    public date;
     private onChange;
     private onTouched;
     private el;
-    private viewDate;
-    private days;
+    public viewDate: string;
+    public days;
     private onTouchedCallback;
     private onChangeCallback;
     constructor(viewContainerRef: ViewContainerRef);
