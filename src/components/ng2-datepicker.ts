@@ -33,6 +33,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   @Input() format: string;
   @Input() viewFormat: string;
   @Input() firstWeekdaySunday: boolean;
+  @Input() forbiddenDates: object[];
 
   public date: any = moment();
   private onChange: Function;
@@ -64,6 +65,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     this.format = this.format || 'YYYY-MM-DD';
     this.viewFormat = this.viewFormat || 'D MMMM YYYY';
     this.firstWeekdaySunday = this.firstWeekdaySunday || false;
+
     setTimeout(() => {
       if (!this.viewDate) {
         let value = moment();
@@ -96,16 +98,18 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     this.days = [];
     let selectedDate = moment(this.value, this.viewFormat);
     for (let i = n; i <= date.endOf('month').date(); i += 1) {
+      let dateTime = new Date(year, month, i);
       let currentDate = moment(`${i}.${month + 1}.${year}`, 'DD.MM.YYYY');
       let today = (moment().isSame(currentDate, 'day') && moment().isSame(currentDate, 'month')) ? true : false;
       let selected = (selectedDate.isSame(currentDate, 'day')) ? true : false;
+      let disabled = this.isDateForbidden(dateTime);
 
       if (i > 0) {
         this.days.push({
           day: i,
           month: month + 1,
           year: year,
-          enabled: true,
+          enabled: !disabled,
           today: today,
           selected: selected
         });
@@ -126,11 +130,14 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     e.preventDefault();
 
     let date: CalendarDate = this.days[i];
-    let selectedDate = moment(`${date.day}.${date.month}.${date.year}`, 'DD.MM.YYYY');
-    this.value = selectedDate.format(this.format);
-    this.viewDate = selectedDate.format(this.viewFormat);
-    this.close();
-    this.generateCalendar();
+
+    if (date.enabled) {
+      let selectedDate = moment(`${date.day}.${date.month}.${date.year}`, 'DD.MM.YYYY');
+      this.value = selectedDate.format(this.format);
+      this.viewDate = selectedDate.format(this.viewFormat);
+      this.close();
+      this.generateCalendar();
+    }
   }
 
   prevMonth() {
@@ -141,6 +148,21 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
   nextMonth() {
     this.date = this.date.add(1, 'month');
     this.generateCalendar();
+  }
+
+  isDateForbidden(date) {
+    const weekDay = date.getDay();
+    const day = date.getDate();
+    const month = date.getMonth();
+    const year = date.getFullYear();
+
+    const isWeekend = ((weekDay % 6 === 0) || weekDay === 0);
+
+    const isForbidden = this.forbiddenDates.filter((d: any) => {
+      return (d.year === year && d.month === month && d.day === day)
+    }).length > 0;
+
+    return isWeekend || isForbidden;
   }
 
   writeValue(value: any) {
